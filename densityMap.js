@@ -25,14 +25,14 @@ var projection = d3.geoMercator()//flat world map projection
             .translate([width / 2, height / 2])
 
 var path = d3.geoPath().projection(projection);//create path with projection
-var den = [1,50,100,300,1000,3000,5000,10000]
-var pop = [10000,50000,100000,500000,1000000,2000000,5000000,10000000]
-var color = d3.scaleThreshold()
+var den = [1,50,100,300,1000,3000,5000,10000]//threshold for density
+var pop = [10000,50000,100000,500000,1000000,2000000,5000000,10000000]//threshold for population
+var color = d3.scaleThreshold()//color scale for density
             .range(d3.schemeReds[9])
             .domain(den)
 
-var districts = {}
-var tooltip = d3.select("body")
+var districts = {}//array to hold district data
+var tooltip = d3.select("body")//access tooltip div
         .append("div")
         .attr("class","tooltip")//make tooltip invisible initally
         .attr("opacity",0);
@@ -40,8 +40,8 @@ var tooltip = d3.select("body")
 //make legend 
 function drawLegend(color,dom){
 
-var y = 10;
-svg.append('g')
+var y = 10;//keep track of placement
+svg.append('g')//draw what box under everything
     .attr('class','legend')
     .selectAll('rect')
     .data(dom)
@@ -53,7 +53,7 @@ svg.append('g')
     .attr('x',0)
     .style('fill','white');
     
-if( dom[0] ==  1){
+if( dom[0] ==  1){//add label to top of legend
     svg.append('g')
     .attr('class','legend')
     .selectAll('text')
@@ -79,7 +79,7 @@ if( dom[0] ==  1){
     .style('fill','black')
     .text('population per region')
 }
-svg.append('g')
+svg.append('g')//add the color squares
     .attr('class','legend')
     .selectAll('rect')
     .data(dom)
@@ -91,7 +91,7 @@ svg.append('g')
     .attr('x',0)
     .style('fill',function(d){return color(d)});
 y=20;
-svg.append('g')
+svg.append('g')//add the text next to squares
     .attr('class','legend')
     .selectAll('text')
     .data(dom)
@@ -106,15 +106,16 @@ svg.append('g')
 
 
 
-d3.json('Yemen.json').then(function(yemen) {
-    d3.csv('Yemen.csv').then(function(yemPop){
-        
+d3.json('Yemen.json').then(function(yemen) {//enter json 
+    d3.csv('Yemen.csv').then(function(yemPop){//enter csv
+        //add legend to csv initialized with density data
         drawLegend(color,den);
         
         districts = yemen.features;
         console.log(districts);
         console.log(yemPop.length);
         console.log(districts.length);
+        //combine data from csv and the data from json stored in districts dictionary
         for (var i=0; i < yemPop.length; ++i){
             var name = yemPop[i].district;
             
@@ -132,7 +133,7 @@ d3.json('Yemen.json').then(function(yemen) {
         console.log(districts)
 
 
-    
+        //draw yemen onto map
         svg.append('g').selectAll('path')
             .data(districts)
             .enter()
@@ -140,7 +141,7 @@ d3.json('Yemen.json').then(function(yemen) {
             .attr('d',path)
             .style('fill',function(d){return color(d.properties.density)})
             .style('stroke', 'black')
-            .on("mouseover",function(d){//add tooltip when mouse in dot area
+            .on("mouseover",function(d){//add tooltip when mouse in area
             tooltip.transition()//fade on
                 .duration("200")
                 .style("opacity",1);
@@ -164,6 +165,7 @@ d3.json('Yemen.json').then(function(yemen) {
         
     })
 });
+//switch view to population choropleth
 function showPop(){
     var colorB = d3.scaleThreshold()
             .range(d3.schemeBlues[8])
@@ -200,6 +202,7 @@ function showPop(){
 
 
 }
+//switch view to density choropleth
 function showDensity(){
     drawLegend(color,den)
     svg.append('g').selectAll('path')
