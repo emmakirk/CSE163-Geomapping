@@ -34,7 +34,7 @@ var color = d3.scaleThreshold()
 var districts = {}
 var tooltip = d3.select("body")
         .append("div")
-        .attr("class","hidden tooltip")//make tooltip invisible initally
+        .attr("class","tooltip")//make tooltip invisible initally
         .attr("opacity",0);
 
 //make legend 
@@ -141,7 +141,6 @@ d3.json('Yemen.json').then(function(yemen) {
             .style('fill',function(d){return color(d.properties.density)})
             .style('stroke', 'black')
             .on("mouseover",function(d){//add tooltip when mouse in dot area
-            tooltip.classed('hidden',false);//make it visible
             tooltip.transition()//fade on
                 .duration("200")
                 .style("opacity",1);
@@ -178,7 +177,6 @@ function showPop(){
             .style('fill',function(d){return colorB(d.properties.population)})
             .style('stroke', 'black')
             .on("mouseover",function(d){//add tooltip when mouse in dot area
-            tooltip.classed('hidden',false);//make it visible
             tooltip.transition()//fade on
                 .duration("200")
                 .style("opacity",1);
@@ -212,7 +210,6 @@ function showDensity(){
             .style('fill',function(d){return color(d.properties.density)})
             .style('stroke', 'black')
             .on("mouseover",function(d){//add tooltip when mouse in dot area
-            tooltip.classed('hidden',false);//make it visible
             tooltip.transition()//fade on
                 .duration("200")
                 .style("opacity",1);
